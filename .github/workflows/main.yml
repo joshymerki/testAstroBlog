@@ -16,7 +16,7 @@ jobs:
         run: npm install astro
 
       - name: Build project
-        run: astro build
+        run: npm run astro build
 
       # - name: Upload project to FTP
       #   uses: SamKirkland/FTP-Deploy-Action@v4.3.4
