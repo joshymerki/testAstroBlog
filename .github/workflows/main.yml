@@ -3,22 +3,29 @@ name: Main FTP Deployment on push
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
     steps:
-      - name: Checkout files
-        uses: Bhacaz/checkout-files@v2
-        with:
-          files: /dist/
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: Sync file to the Server
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.FTP_MAIN_SERVER }}
-          username: ${{ secrets.FTP_MAIN_USER }}
-          password: ${{ secrets.FTP_PW }}
+      - name: Install Astro
+        run: npm install astro
+
+      - name: Build project
+        run: astro build
+
+      # - name: Upload project to FTP
+      #   uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      #   with:
+      #     server: ${{ secrets.FTP_MAIN_SERVER }}
+      #     username: ${{ secrets.FTP_MAIN_USER }}
+      #     password: ${{ secrets.FTP_PW }}
+      #     args: -e "mirror --only-newer -R dist /"
+
+      - name: Upload project to FTP
+        run: |
+          lftp -c "set ftp:ssl-allow no; open -u ${{ secrets.FTP_MAIN_USER }},${{ secrets.FTP_PW }} ${{ secrets.FTP_MAIN_SERVER }}; mirror --only-newer -R dist /"
