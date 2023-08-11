@@ -2,7 +2,8 @@ name: Main FTP Deployment on push
 
 on:
   push:
-    branches: [main]
+    branches:
+      -main
   workflow_dispatch:
 
 jobs:
@@ -24,4 +25,4 @@ jobs:
           server: ${{ secrets.FTP_MAIN_SERVER }}
           username: ${{ secrets.FTP_MAIN_USER }}
           password: ${{ secrets.FTP_PW }}
-          local-dir: app/dist/
+          local-dir: dist/
